@@ -9,6 +9,7 @@ type Room = {
   room_no: string
   name: string
   cleanliness: string
+  equipment: string | null
 }
 
 type BreakdownHistory = {
@@ -168,42 +169,41 @@ export default function RoomDetailPage({
     setLoading(false)
   }
 
-  const handleCreateBreakdown = async () => {
-    setFormMessage('')
+      const handleCreateBreakdown = async () => {
+        setFormMessage('')
 
-    if (!room) {
-      setFormMessage('룸 정보를 찾을 수 없음')
-      return
-    }
+        if (!room) {
+          setFormMessage('룸 정보를 찾을 수 없음')
+          return
+        }
 
-    if (!newIssueDate || !newIssueSummary) {
-      setFormMessage('접수일자와 고장 내용을 입력해줘')
-      return
-    }
+        if (!newIssueDate || !newIssueSummary) {
+          setFormMessage('접수일자와 고장 내용을 입력해줘')
+          return
+        }
 
-    const const createdBy = 'guest'
-    // const createdBy = user?.email ? getDisplayId(user.email) : 'unknown'
+        const createdBy = 'guest'
 
-    const { error } = await supabase.from('breakdown_history').insert({
-      room_id: room.id,
-      issue_date: newIssueDate,
-      summary: newIssueSummary,
-      status: newIssueStatus,
-      created_by: createdBy,
-    })
+        const { error } = await supabase.from('breakdown_history').insert({
+          room_id: room.id,
+          issue_date: newIssueDate,
+          summary: newIssueSummary,
+          status: newIssueStatus,
+          created_by: createdBy,
+        })
 
-    if (error) {
-      setFormMessage(`등록 실패: ${error.message}`)
-      return
-    }
+        if (error) {
+          setFormMessage(`등록 실패: ${error.message}`)
+          return
+        }
 
-    setFormMessage('고장 접수 등록 완료')
-    setNewIssueDate('')
-    setNewIssueSummary('')
-    setNewIssueStatus('접수')
+        setFormMessage('고장 접수 등록 완료')
+        setNewIssueDate('')
+        setNewIssueSummary('')
+        setNewIssueStatus('접수')
 
-    await fetchRoomDetail()
-  }
+        await fetchRoomDetail()
+      }
 
   if (loading) {
     return (
@@ -308,21 +308,27 @@ export default function RoomDetailPage({
           </div>
         </div>
 
-        <div className="rounded-2xl bg-white p-6 shadow">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-xl border p-4">
-              <p className="text-sm text-slate-500">Room No.</p>
-              <p className="mt-2 text-lg font-semibold">{room.room_no}</p>
-            </div>
+              <div className="rounded-2xl bg-white p-6 shadow">
+               <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div className="rounded-xl border p-4">
+                  <p className="text-sm text-slate-500">Room No.</p>
+                  <p className="mt-2 text-lg font-semibold">{room.room_no}</p>
+                </div>
 
-            <div className="rounded-xl border p-4">
-              <p className="text-sm text-slate-500">Name</p>
-              <p className="mt-2 text-lg font-semibold">{room.name}</p>
-            </div>
+                <div className="rounded-xl border p-4">
+                  <p className="text-sm text-slate-500">Name</p>
+                  <p className="mt-2 text-lg font-semibold">{room.name}</p>
+                </div>
 
-            <div className="rounded-xl border p-4">
-              <p className="text-sm text-slate-500">청정도</p>
-              <p className="mt-2 text-lg font-semibold">{room.cleanliness}</p>
+                <div className="rounded-xl border p-4">
+                  <p className="text-sm text-slate-500">청정도</p>
+                  <p className="mt-2 text-lg font-semibold">{room.cleanliness}</p>
+                </div>
+
+                <div className="rounded-xl border p-4">
+                  <p className="text-sm text-slate-500">보유설비</p>
+                  <p className="mt-2 text-lg font-semibold">{room.equipment || '-'}</p>
+              </div>  
             </div>
           </div>
         </div>
@@ -446,7 +452,7 @@ export default function RoomDetailPage({
             </div>
           )}
         </div>
-      </div>
+    
     </main>
   )
 }
