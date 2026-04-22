@@ -327,7 +327,9 @@ export default function RoomDetailPage({
 
                 <div className="rounded-xl border p-4">
                   <p className="text-sm text-slate-500">보유설비</p>
-                  <p className="mt-2 text-lg font-semibold">{room.equipment || '-'}</p>
+                  <p className="mt-2 text-lg font-semibold">
+                    {room.equipment || '-'}
+                    </p>
               </div>  
             </div>
           </div>
